@@ -647,6 +647,16 @@ bool shouldInitializeGPSHeading(void)
 float getCosTiltAngle(void)
 {
     return rMat[2][2];
+    /*float a = DECIDEGREES_TO_RADIANS(attitude.values.roll);
+    float b = DECIDEGREES_TO_RADIANS(attitude.values.pitch);
+    float sa = sin_approx(a);
+    float sb = sin_approx(b);
+    float ca = cos_approx(a);
+    float cb = cos_approx(b);
+    float cacb=ca*cb;
+    float sacb=sa*cb;
+    float casb=ca*sb;
+    return cacb/sqrtf(cacb*cacb+sacb*sacb+casb*casb);*/
 }
 
 void getQuaternion(quaternion *quat)
@@ -738,6 +748,26 @@ void imuQuaternionHeadfreeTransformVectorEarthToBody(t_fp_vector_def *v)
 
     imuQuaternionMultiplication(&offset, &q, &headfree);
     imuQuaternionComputeProducts(&headfree, &buffer);
+
+    const float x = (buffer.ww + buffer.xx - buffer.yy - buffer.zz) * v->X + 2.0f * (buffer.xy + buffer.wz) * v->Y + 2.0f * (buffer.xz - buffer.wy) * v->Z;
+    const float y = 2.0f * (buffer.xy - buffer.wz) * v->X + (buffer.ww - buffer.xx + buffer.yy - buffer.zz) * v->Y + 2.0f * (buffer.yz + buffer.wx) * v->Z;
+    const float z = 2.0f * (buffer.xz + buffer.wy) * v->X + 2.0f * (buffer.yz - buffer.wx) * v->Y + (buffer.ww - buffer.xx - buffer.yy + buffer.zz) * v->Z;
+
+    v->X = x;
+    v->Y = y;
+    v->Z = z;
+}
+
+void quatRotate(int angel_yaw, t_fp_vector_def *v){
+    quaternionProducts buffer;
+    const float yaw = DEGREES_TO_RADIANS( angel_yaw );
+    quaternion off;
+    off.w = cos_approx(yaw/2);
+    off.x = 0;
+    off.y = 0;
+    off.z = sin_approx(yaw/2);
+
+    imuQuaternionComputeProducts(&off, &buffer);
 
     const float x = (buffer.ww + buffer.xx - buffer.yy - buffer.zz) * v->X + 2.0f * (buffer.xy + buffer.wz) * v->Y + 2.0f * (buffer.xz - buffer.wy) * v->Z;
     const float y = 2.0f * (buffer.xy - buffer.wz) * v->X + (buffer.ww - buffer.xx + buffer.yy - buffer.zz) * v->Y + 2.0f * (buffer.yz + buffer.wx) * v->Z;

@@ -1066,6 +1066,18 @@ const clivalue_t valueTable[] = {
     { PARAM_NAME_GPS_RESCUE_VELOCITY_D,      VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, velD) },
     { PARAM_NAME_GPS_RESCUE_YAW_P,           VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, yawP) },
 
+    { "gps_rescue_poshold_distance_p",           VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, distanceP) },
+    { "gps_rescue_poshold_distance_pid_max",           VAR_UINT16  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 65535 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, distancePidMax) },
+    { "gps_rescue_poshold_velocity_p",      VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, posVelP) },
+    { "gps_rescue_poshold_velocity_i",      VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, posVelI) },
+    { "gps_rescue_poshold_velocity_d",      VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, posVelD) },
+
+    { "gps_rescue_poshold_throttle_p",     VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, posThrottleP) },
+    { "gps_rescue_poshold_throttle_i",     VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, posThrottleI) },
+    { "gps_rescue_poshold_throttle_d",     VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 0, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, posThrottleD) },
+
+    { "gps_rescue_altitude_cuteoff_hz",     VAR_UINT8  | MASTER_VALUE, .config.minmaxUnsigned = { 1, 255 }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, altitudeFilterCutoffHz) },
+
 #ifdef USE_MAG
     { PARAM_NAME_GPS_RESCUE_USE_MAG,         VAR_UINT8  | MASTER_VALUE | MODE_LOOKUP, .config.lookup = { TABLE_OFF_ON }, PG_GPS_RESCUE, offsetof(gpsRescueConfig_t, useMag) },
 #endif // USE_MAG

@@ -246,8 +246,8 @@ typedef struct gpsSolutionData_s {
     gpsLocation_t llh;
     gpsDilution_t dop;
     gpsAccuracy_t acc;
-    uint16_t speed3d;               // speed in 0.1m/s
-    uint16_t groundSpeed;           // speed in 0.1m/s
+    uint16_t speed3d;               // speed in cm/s
+    uint16_t groundSpeed;           // speed in cm/s
     uint16_t groundCourse;          // degrees * 10
     uint8_t numSat;
     uint32_t time;                  // GPS msToW
@@ -304,6 +304,8 @@ extern uint16_t GPS_distanceToHome;             // distance to home point in met
 extern uint32_t GPS_distanceToHomeCm;           // distance to home point in cm
 extern int16_t GPS_directionToHome;             // direction to home or hol point in degrees
 extern uint32_t GPS_distanceFlownInCm;          // distance flown since armed in centimeters
+extern int32_t GPS_GroundCourse;// degrees * 10
+extern int32_t GPS_GroundSpeedCms;
 extern int16_t GPS_angle[ANGLE_INDEX_COUNT];    // it's the angles that must be applied for GPS correction
 extern float GPS_scaleLonDown;                  // this is used to offset the shrinking longitude as we go towards the poles
 
@@ -396,3 +398,6 @@ void GPS_distance_cm_bearing(int32_t *currentLat1, int32_t *currentLon1, int32_t
 void gpsSetFixState(bool state);
 float getGpsDataIntervalSeconds(void);      // sends GPS Nav Data interval to GPS Rescue
 baudRate_e getGpsPortActualBaudRateIndex(void);
+
+void GPS_getPos(int32_t GPS_Pos[2]);
+void GPS_calculateDistanceAndDirectionToPos(int32_t GPS_Pos[2],int32_t *pGPS_DistCm, int32_t *pGPS_Dir);

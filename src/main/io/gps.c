@@ -71,6 +71,11 @@ uint32_t GPS_distanceToHomeCm;
 int16_t GPS_directionToHome;        // direction to home or hol point in degrees * 10
 uint32_t GPS_distanceFlownInCm;     // distance flown since armed in centimeters
 
+int32_t GPS_GroundCourse;// degrees * 10
+int32_t GPS_GroundSpeedCms;
+
+int32_t GPS_prevLoc[2];
+
 #define GPS_DISTANCE_FLOWN_MIN_SPEED_THRESHOLD_CM_S 15 // 0.54 km/h 0.335 mph
 
 gpsSolutionData_t gpsSol;
@@ -1516,6 +1521,7 @@ bool gpsNewFrame(uint8_t c)
 bool gpsIsHealthy(void)
 {
     return (gpsData.state == GPS_STATE_RECEIVING_DATA);
+    //return true;
 }
 
 /* This is a light implementation of a GPS frame decoding
@@ -2587,8 +2593,36 @@ void GPS_distance_cm_bearing(int32_t *currentLat1, int32_t *currentLon1, int32_t
         *bearing += 36000;
 }
 
+void GPS_getPos(int32_t GPS_Pos[2]){    
+    GPS_Pos[GPS_LATITUDE]=gpsSol.llh.lat;
+    GPS_Pos[GPS_LONGITUDE]=gpsSol.llh.lon;
+}
+/*
+ * pGPS_DistCm cm
+ * pGPS_Dir degrees * 10
+ * 
+ * */
+void GPS_calculateDistanceAndDirectionToPos(int32_t GPS_Pos[2],int32_t *pGPS_DistCm, int32_t *pGPS_Dir){
+    uint32_t groundDist;
+    int32_t groundDir;
+    GPS_distance_cm_bearing(&gpsSol.llh.lat, &gpsSol.llh.lon, &GPS_Pos[GPS_LATITUDE], &GPS_Pos[GPS_LONGITUDE], &groundDist, &groundDir);
+    *pGPS_DistCm = groundDist;
+    *pGPS_Dir = groundDir / 10;
+}
+
 void GPS_calculateDistanceAndDirectionToHome(void)
 {
+    if(GPS_prevLoc[GPS_LATITUDE]!=0 && GPS_prevLoc[GPS_LONGITUDE]!=0 && gpsSol.navIntervalMs < 10*1000 && gpsSol.navIntervalMs > 0){
+        uint32_t groundDist;
+        int32_t groundDir;
+        GPS_distance_cm_bearing(&GPS_prevLoc[GPS_LATITUDE], &GPS_prevLoc[GPS_LONGITUDE], &gpsSol.llh.lat, &gpsSol.llh.lon, &groundDist, &groundDir);
+        GPS_GroundCourse = groundDir / 10;
+        GPS_GroundSpeedCms = groundDist * 1000 / gpsSol.navIntervalMs;
+    }
+    GPS_prevLoc[GPS_LATITUDE]=gpsSol.llh.lat;
+    GPS_prevLoc[GPS_LONGITUDE]=gpsSol.llh.lon;
+
+
     if (STATE(GPS_FIX_HOME)) {
         uint32_t dist;
         int32_t dir;

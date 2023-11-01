@@ -36,7 +36,7 @@ PG_RESET_TEMPLATE(gpsRescueConfig_t, gpsRescueConfig,
     .minStartDistM = 15,
     .altitudeMode = GPS_RESCUE_ALT_MODE_MAX,
     .initialClimbM = 10,
-    .ascendRate = 750,          // cm/s, for altitude corrections on ascent
+    .ascendRate = 200,          // cm/s, for altitude corrections on ascent
 
     .returnAltitudeM = 30,
     .groundSpeedCmS = 750,
@@ -66,7 +66,19 @@ PG_RESET_TEMPLATE(gpsRescueConfig_t, gpsRescueConfig,
     .yawP = 20,
 
     .useMag = GPS_RESCUE_USE_MAG,
-    .imuYawGain = 10
+    .imuYawGain = 10,
+
+    .distanceP = 50,
+    .distancePidMax = 200,
+    .posVelP = 10,
+    .posVelI = 1,
+    .posVelD = 16,
+
+    .posThrottleP = 25,
+    .posThrottleI = 0,
+    .posThrottleD = 20,
+
+    .altitudeFilterCutoffHz = 45
 );
 
 #endif // USE_GPS_RESCUE

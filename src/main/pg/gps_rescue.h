@@ -50,6 +50,11 @@ typedef struct gpsRescue_s {
     uint8_t  disarmThreshold;
     uint8_t  pitchCutoffHz;
     uint8_t  imuYawGain;
+    uint8_t  distanceP;
+    uint16_t distancePidMax;
+    uint8_t  posVelP, posVelI, posVelD;
+    uint8_t  posThrottleP, posThrottleI, posThrottleD;
+    uint8_t  altitudeFilterCutoffHz;
 } gpsRescueConfig_t;
 
 PG_DECLARE(gpsRescueConfig_t, gpsRescueConfig);
